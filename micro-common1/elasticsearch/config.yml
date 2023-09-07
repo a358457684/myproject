@@ -1,0 +1,5 @@
+elastic:
+  hosts:
+    - http://192.168.6.100:7001
+  username: airobot
+  password: hArhIhzfg5

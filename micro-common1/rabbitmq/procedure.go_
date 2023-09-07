@@ -1,0 +1,109 @@
+package rabbitmq
+
+import (
+	"common/log"
+	"errors"
+	"github.com/streadway/amqp"
+	"github.com/suiyunonghen/DxCommonLib"
+	"sync/atomic"
+	"time"
+)
+
+
+type RMQProcedure struct {
+	etype        ExchangeType
+	RMQBase
+	exchangeName string
+}
+
+
+func NewProcedure(rmqAddr string, t ExchangeType, exchangeorQueueName string, autoReconnect bool, l *log.Logger) (*RMQProcedure, error) {
+	con, err := amqp.Dial(rmqAddr)
+	if err != nil {
+		return nil, err
+	}
+	c, err := con.Channel()
+	if err != nil {
+		return nil, err
+	}
+	if exchangeorQueueName != "" {
+		if t == ETNone{
+			if _, err := c.QueueDeclare(exchangeorQueueName, true, false, false, true, nil); err != nil {
+				return nil,err
+			}
+		}else if err = c.ExchangeDeclare(exchangeorQueueName, t.String(), true, false, false, true, nil); err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, errors.New("无效的exchangeName")
+	}
+	p := &RMQProcedure{
+		etype:   t,
+		RMQBase: RMQBase{
+			rqurl:   rmqAddr,
+			l:       l,
+			rmqCon:  con,
+			channel: c,
+			state:   RQSActive,
+			quit:    make(chan struct{}),
+		},
+		exchangeName: exchangeorQueueName,
+	}
+	p.rmqConnectOK = p.createProcedureInfo
+	p.enableReconnect(autoReconnect)
+	return p, nil
+}
+
+
+func (p *RMQProcedure) createProcedureInfo() error {
+	if p.exchangeName != "" {
+		if p.etype == ETNone{
+			if _, err := p.channel.QueueDeclare(p.exchangeName, true, false, false, true, nil); err != nil {
+				return err
+			}
+		}else if err := p.channel.ExchangeDeclare(p.exchangeName, p.etype.String(), true, false, false, true, nil); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (p *RMQProcedure) PublishSimple(routkey string, msg []byte) {
+	switch RQStatus(atomic.LoadInt32((*int32)(&p.state))) {
+	case RQSActive:
+		//发送
+		if p.etype == ETNone{
+			p.channel.Publish("", p.exchangeName, false, false,
+				amqp.Publishing{Body: msg,
+					DeliveryMode: 0, //2表示持久化，
+					ContentType:  "application/json"})
+		}else{
+			p.channel.Publish(p.exchangeName, routkey, false, false,
+				amqp.Publishing{Body: msg,
+					DeliveryMode: 0, //2表示持久化，
+					ContentType:  "application/json"})
+		}
+	case RQSOffline:
+		return
+	case RQSReconnecting:
+		//正在重连中将消息记录到缓存先
+
+	}
+}
+
+func (p *RMQProcedure) Publish(routkey string, publishing amqp.Publishing) {
+	switch RQStatus(atomic.LoadInt32((*int32)(&p.state))) {
+	case RQSActive:
+		//发送
+		if p.etype == ETNone{
+			p.channel.Publish("", p.exchangeName, false, false, publishing)
+		}else{
+			p.channel.Publish(p.exchangeName, routkey, false, false, publishing)
+		}
+	case RQSOffline:
+		return
+	case RQSReconnecting:
+		//正在重连中将消息记录到缓存先
+
+	}
+}

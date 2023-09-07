@@ -1,0 +1,9 @@
+dfs:
+  addr: 192.168.6.210:9000
+  username: minio
+  password: Minio@airobot3
+  bucket: test
+  domain: minio-dev-api.dd.com:7070
+
+log:
+  level: debug

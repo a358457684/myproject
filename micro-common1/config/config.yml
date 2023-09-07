@@ -1,0 +1,96 @@
+project:
+  port: 8080
+  name: &projectName common
+  fileurl: asdfasdf
+  test: gg
+  projectInfo:
+    addr: 234
+    gg: sdfadf
+
+jwt:
+  issuer: *projectName
+  secret: c2VybmFtZSI6InRlc3QiLCJleHAiOjE2MDA5MjE0MjEsImlzcyI6ImVwc2hlYWx0aCIsIm5iZiI6MTYwMDkxNDIyMX0
+  expires: 2h
+
+redis:
+  # 单例模式
+  single:
+    addr: 192.168.2.8:6379
+    password: 123456
+    db: 10
+    dialtimeout: 5s
+    readtimeout: 3s
+    writetimeout: 3s
+# 哨兵模式
+#  sentinel:
+#    mastername: logistics
+#    sentineladdrs:
+#      - 192.168.2.8:6379
+#      - 192.168.2.9:6379
+#    password: 123456
+#    db: 10
+# 集群模式
+#  cluster:
+#    addrs:
+#      - 192.168.2.8:6379
+#      - 192.168.2.8:6379
+
+# 集群模式2
+#  cluster:
+#    -
+#      start: 0
+#      end: 8191
+#      nodes:
+#        - :7000
+#        - :8000
+#    -
+#      start: 8192
+#      end: 16383
+#      nodes:
+#        - :7001
+#        - :8001
+
+db:
+  master:
+    dialector: mysql 
+    url: tcp(192.168.2.8:3306)/logistics?charset=utf8&tls=false
+    username: it
+    password: it
+    maxopen: 100
+    maxidle: 10
+  slave:
+    dialector: mysql
+    url: tcp(192.168.2.8:3306)/logistics?charset=utf8&tls=false
+    username: it
+    password: it
+    maxopen: 100
+    maxidle: 10
+
+mqtt:
+  services:
+    - tcp://192.168.2.11:1883
+  username: mqtt-wl
+  password: mqtt-wl
+  clientId: core-biz
+
+rabbitmq:
+  service: 192.168.2.11:5672
+  host: logistics-test
+  username: logistics-test
+  password: logistics-test
+
+log:
+  project: *projectName
+  author: machine
+  machine: machine
+  level: info
+#  file: logs/airobot-proxy.log
+
+
+customone:
+  name: 张三
+  age: 14
+
+customtwo:
+  name: 李四
+  age: 24

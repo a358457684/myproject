@@ -1,0 +1,38 @@
+redis:
+  # 单例模式
+#  single:
+#    addr: 192.168.6.105:5001
+#    password: c7605l0Mk0
+#    db: 10
+#    dialtimeout: 5s
+#    readtimeout: 3s
+#    writetimeout: 3s
+  # 哨兵模式
+  sentinel:
+    mastername: airobot
+    sentineladdrs:
+      - 192.168.6.103:5010
+      - 192.168.6.104:5010
+      - 192.168.6.105:5010
+    password: c7605l0Mk0
+    db: 10
+# 集群模式
+#  cluster:
+#    addrs:
+#      - 192.168.2.8:6379
+#      - 192.168.2.8:6379
+
+# 集群模式2
+#  cluster:
+#    -
+#      start: 0
+#      end: 8191
+#      nodes:
+#        - :7000
+#        - :8000
+#    -
+#      start: 8192
+#      end: 16383
+#      nodes:
+#        - :7001
+#        - :8001

@@ -1,0 +1,6 @@
+log:
+  project: common
+  author: eric
+  machine: machine_eric
+  level: info
+#  file: logs/airobot-proxy.log

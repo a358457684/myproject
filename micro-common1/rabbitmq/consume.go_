@@ -1,0 +1,179 @@
+package rabbitmq
+
+import (
+	"common/log"
+	"errors"
+	"net"
+	"github.com/streadway/amqp"
+	"github.com/suiyunonghen/DxCommonLib"
+	"io"
+	"sync"
+	"sync/atomic"
+	"eps_common/huping/net_resuse"
+	"time"
+)
+
+type RMQConsume struct {
+	etype        ExchangeType
+	RMQBase
+	queueName    string //队列名称
+	exchangeName string
+	autoAck      bool
+	bindings     []string
+	handler      func(msg amqp.Delivery)
+	sync.RWMutex
+}
+
+var (
+	ErrReconnecting = errors.New("正在重连中")
+)
+
+//订阅主题
+func (c *RMQConsume) Subscribe(topickey string) error {
+	if c.Status() != RQSActive {
+		return nil
+	}
+	c.Lock()
+	for _, vstr := range c.bindings {
+		if vstr == topickey {
+			c.Unlock()
+			return nil
+		}
+	}
+	if err := c.channel.QueueBind(c.queueName, topickey, c.exchangeName, true, nil); err != nil {
+		c.Unlock()
+		return err
+	}
+	c.bindings = append(c.bindings, topickey)
+	c.Unlock()
+	return nil
+}
+
+func doDial(network, addr string) (net.Conn, error)  {
+	return net_resuse.Dial(network,"",addr)
+}
+
+func newConsume(rmqAddr string, t ExchangeType, queueName, exchangeName string, autoAck bool, autoReconnect bool, l *log.Logger) (*RMQConsume, error) {
+	con, err := amqp.DialConfig(rmqAddr,amqp.Config{
+		Heartbeat: 10 * time.Second,
+		Locale:    "en_US",
+		Dial: doDial,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	c, err := con.Channel()
+	if err != nil {
+		return nil, err
+	}
+	if exchangeName != "" {
+		if err = c.ExchangeDeclare(exchangeName, t.String(), true, false, false, true, nil); err != nil {
+			return nil, err
+		}
+	}
+	if queue, err := c.QueueDeclare(queueName, true, false, false, true, nil); err != nil {
+		return nil, err
+	} else {
+		queueName = queue.Name
+	}
+
+	quitchan := make(chan struct{})
+	consume := &RMQConsume{
+		etype:   t,
+		RMQBase: RMQBase{
+			rqurl:   rmqAddr,
+			l:       l,
+			rmqCon:  con,
+			channel: c,
+			state:   RQSActive,
+			quit:    quitchan,
+		},
+		exchangeName: exchangeName,
+		queueName:    queueName,
+		autoAck:      autoAck,
+	}
+	consume.rmqConnectOK = consume.createConsume
+	consume.enableReconnect(autoReconnect)
+	return consume, nil
+}
+func NewConsume(rmqAddr string, t ExchangeType, queueName, exchangeName string, autoReconnect bool, l *log.Logger) (*RMQConsume, error) {
+	return newConsume(rmqAddr, t, queueName, exchangeName, true, autoReconnect, l)
+}
+
+func (c *RMQConsume) handlermsg(msgs <-chan amqp.Delivery) {
+	tk := DxCommonLib.After(time.Second)
+	for {
+		select {
+		case <-c.quit:
+			if c.handler != nil {
+				select {
+				case msg := <-msgs:
+					c.handler(msg)
+				default:
+				}
+			}
+			return
+		case msg,ok := <-msgs:
+			if !ok{
+				return
+			}
+			if msg.Body != nil {
+				c.handler(msg)
+				tk = DxCommonLib.After(time.Second)
+			} else if RQStatus(atomic.LoadInt32((*int32)(&c.state))) < RQSActive {
+				return
+			}
+		case <-tk:
+			if RQStatus(atomic.LoadInt32((*int32)(&c.state))) < RQSActive {
+				return
+			}
+			tk = DxCommonLib.After(time.Second)
+		}
+	}
+}
+
+func (c *RMQConsume) Start(h func(d amqp.Delivery)) error {
+	switch c.Status() {
+	case RQSStart:
+		return nil
+	case RQSOffline:
+		return io.EOF
+	case RQSReconnecting:
+		return ErrReconnecting
+	}
+	c.handler = h
+	msgs, err := c.channel.Consume(c.queueName, "", c.autoAck, false, false, true, nil)
+	if err != nil {
+		return err
+	}
+	go c.handlermsg(msgs)
+	return nil
+}
+
+func (c *RMQConsume) createConsume() error {
+	if c.exchangeName != "" {
+		if err := c.channel.ExchangeDeclare(c.exchangeName, c.etype.String(), true, false, false, true, nil); err != nil {
+			return err
+		}
+	}
+	if q, err := c.channel.QueueDeclare(c.queueName, true, false, false, true, nil); err != nil {
+		return err
+	} else {
+		c.queueName = q.Name
+	}
+
+	c.RLock()
+	for _, bindkey := range c.bindings {
+		if err := c.channel.QueueBind(c.queueName, bindkey, c.exchangeName, true, nil); err != nil {
+			continue
+		}
+	}
+	c.RUnlock()
+	msgs, err := c.channel.Consume(c.queueName, "", c.autoAck, false, false, true, nil)
+	if err != nil {
+		return err
+	}
+	go c.handlermsg(msgs)
+	return nil
+}

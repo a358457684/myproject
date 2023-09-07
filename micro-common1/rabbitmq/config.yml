@@ -1,0 +1,5 @@
+rabbitmq:
+  service: 192.168.6.100:6001
+  host: airobot-dev
+  username: airobot
+  password: tbgmJIUoHx

@@ -1,0 +1,12 @@
+.idea
+logs
+tmp
+.DS_Store
+/logs
+/tmp
+go.sum
+/rabbitmq/go.sum
+/db/*.sum
+/jwt/*.sum
+/orm/*.sum
+/websocket/*.sum

@@ -1,0 +1,6 @@
+package rabbitmq
+
+type Exchange struct {
+	Model ExchangeType
+	Name  string
+}
