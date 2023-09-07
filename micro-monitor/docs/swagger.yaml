@@ -1,0 +1,1023 @@
+basePath: /api
+definitions:
+  controller.FloorMapAndRobotVo:
+    properties:
+      floor:
+        type: integer
+      liftAreaCoords:
+        description: 电梯区域坐标集合
+        items:
+          $ref: '#/definitions/model.Point'
+        type: array
+      mapFile:
+        type: string
+      officeId:
+        type: string
+      originX:
+        type: number
+      originY:
+        type: number
+      positionList:
+        description: 充电桩集合
+        items:
+          $ref: '#/definitions/dao.RobotPositionRes'
+        type: array
+      resolution:
+        type: number
+      robotStatusList:
+        description: 机器人状态集合
+        items:
+          $ref: '#/definitions/model.RobotStatusRes'
+        type: array
+      trafficAreaCoords:
+        description: 管制区域坐标集合
+        items:
+          $ref: '#/definitions/model.Point'
+        type: array
+    type: object
+  controller.LoginVo:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 账号
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controller.OfficeData:
+    properties:
+      id:
+        description: 编号
+        type: string
+    required:
+    - id
+    type: object
+  controller.OperateRobotVo:
+    properties:
+      alertMessage:
+        description: 操作原因信息
+        type: string
+      officeId:
+        description: 机构id
+        type: string
+      operateType:
+        type: integer
+      robotId:
+        description: 机器人id
+        type: string
+    required:
+    - officeId
+    - operateType
+    - robotId
+    type: object
+  controller.ProxyVo:
+    properties:
+      account:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      netStatus:
+        type: integer
+      netStatusText:
+        type: string
+    type: object
+  controller.ReleaseVo:
+    properties:
+      officeId:
+        description: 机构id
+        type: string
+      releaseType:
+        type: integer
+      robotId:
+        description: 机器人id
+        type: string
+    required:
+    - officeId
+    - releaseType
+    - robotId
+    type: object
+  controller.RobotByOfficeAndStatusVo:
+    properties:
+      netStatus:
+        type: integer
+      officeId:
+        type: string
+      status:
+        type: integer
+    required:
+    - officeId
+    type: object
+  controller.RobotConfigVo:
+    properties:
+      jobStatusList:
+        items:
+          $ref: '#/definitions/enum.SimpleJobStatus'
+        type: array
+      jobTypeList:
+        items:
+          $ref: '#/definitions/enum.SimpleJobType'
+        type: array
+      models:
+        items:
+          type: string
+        type: array
+      statusList:
+        items:
+          $ref: '#/definitions/enum.SimpleRobotStatus'
+        type: array
+    type: object
+  controller.RobotFloorVo:
+    properties:
+      buildingId:
+        description: 楼宇id
+        type: string
+      officeId:
+        description: 机构id
+        type: string
+      robotId:
+        description: 机器人id
+        type: string
+      robotModel:
+        description: 机器人类型
+        type: string
+    required:
+    - officeId
+    - robotId
+    type: object
+  controller.SimpleRobotVo:
+    properties:
+      officeId:
+        description: 机构id
+        type: string
+      robotId:
+        description: 机器人id
+        type: string
+    required:
+    - officeId
+    - robotId
+    type: object
+  dao.AreaVo:
+    properties:
+      id:
+        description: 子id
+        type: string
+      name:
+        description: 区域名称
+        type: string
+      parentId:
+        description: 父id
+        type: string
+    type: object
+  dao.MenuVo:
+    properties:
+      id:
+        description: 编号
+        type: string
+      name:
+        description: 名称
+        type: string
+      permission:
+        description: 权限标识
+        type: string
+      type:
+        description: 是否在菜单中显示
+        type: string
+    type: object
+  dao.OfficeBuildingVo:
+    properties:
+      id:
+        description: 编号
+        type: string
+      name:
+        description: 名称
+        type: string
+    type: object
+  dao.OfficeVo:
+    properties:
+      cityId:
+        description: 城市
+        type: string
+      id:
+        description: 编号
+        type: string
+      name:
+        description: 名称
+        type: string
+      provinceId:
+        description: 省份
+        type: string
+    type: object
+  dao.RobotPositionRes:
+    properties:
+      cname:
+        description: 位置名称
+        type: string
+      cx:
+        description: 位置 x 坐标
+        type: number
+      cy:
+        description: 位置 y 坐标
+        type: number
+      id:
+        description: guid
+        type: string
+      type:
+        description: 任务类型 1 、4 、7 以外的类型不能呼叫
+        type: integer
+    type: object
+  enum.SimpleJobStatus:
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+    type: object
+  enum.SimpleJobType:
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+    type: object
+  enum.SimpleRobotStatus:
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+    type: object
+  model.ElasticRobotJobExec:
+    properties:
+      acceptState:
+        description: 物品接收状态
+        type: integer
+      buildingName:
+        description: 楼宇名称
+        type: string
+      dispatchMode:
+        description: 运行模式
+        type: integer
+      documentId:
+        description: 文档id
+        type: string
+      estopStatus:
+        description: 是否急停 0-正常，1-急停状态
+        type: integer
+      execStateEnum:
+        description: 新增加的字段
+        type: integer
+      execStateText:
+        description: 任务执行状态描述
+        type: string
+      finalJobId:
+        description: 最终任务Id
+        type: string
+      finalJobType:
+        description: 最终任务类型
+        type: string
+      floor:
+        description: 楼层
+        type: integer
+      jobId:
+        description: jobId
+        type: string
+      message:
+        type: string
+      pauseType:
+        description: 是否暂停：1：暂停，0：正常
+        type: integer
+      robotId:
+        description: 机器人id
+        type: string
+      robotName:
+        description: 机器人名称
+        type: string
+      spotName:
+        description: 当前位置名称
+        type: string
+      status:
+        type: integer
+      statusEndTime:
+        description: 状态结束时间
+        type: integer
+      statusStartTime:
+        description: 状态开始时间
+        type: integer
+      statusText:
+        type: string
+      stopInfo:
+        type: string
+      targetName:
+        description: 目标位置名称
+        type: string
+      timeConsume:
+        description: 耗时
+        type: number
+    type: object
+  model.OfficeFloorVo:
+    properties:
+      buildingId:
+        description: 楼宇id
+        type: string
+      floor:
+        description: 楼层
+        type: integer
+      officeId:
+        description: 机构id
+        type: string
+      robotModel:
+        description: 机器人类型
+        type: string
+    required:
+    - buildingId
+    - floor
+    - officeId
+    - robotModel
+    type: object
+  model.PageResult:
+    properties:
+      data:
+        type: object
+      pageIndex:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  model.Point:
+    properties:
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  model.RobotJobQueryVo:
+    properties:
+      endDate:
+        description: 结束时间
+        type: string
+      jobStatus:
+        type: integer
+      jobType:
+        type: integer
+      officeId:
+        description: 机构id
+        type: string
+      pageIndex:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 页数
+        type: integer
+      robotId:
+        description: 机器人id
+        type: string
+      startDate:
+        description: 开始时间
+        type: string
+    required:
+    - officeId
+    - pageIndex
+    - pageSize
+    - robotId
+    type: object
+  model.RobotJobStatusChangeQuery:
+    properties:
+      day:
+        description: 时间，主要用来定位索引
+        type: string
+      jobId:
+        description: 任务id
+        type: string
+      officeId:
+        type: string
+      robotId:
+        description: 机器人id
+        type: string
+    required:
+    - jobId
+    - officeId
+    type: object
+  model.RobotStatusRes:
+    properties:
+      robotId:
+        type: string
+      robotModel:
+        description: 机器人型号
+        type: string
+      robotName:
+        type: string
+      status:
+        type: integer
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  model.RobotStatusVo:
+    properties:
+      buildingId:
+        type: string
+      buildingName:
+        type: string
+      chassisSerialNumber:
+        description: 软件版本号
+        type: string
+      dispatchMode:
+        description: 是否调度模式
+        type: boolean
+      eStopStatus:
+        description: 是否急停  0：正常， 1：急停
+        type: integer
+      electric:
+        description: 电量
+        type: number
+      floor:
+        description: 楼层
+        type: integer
+      lastUploadTime:
+        description: 最后上传时间
+        type: string
+      name:
+        description: 机器人名称
+        type: string
+      netStatus:
+        description: 网络状态
+        type: integer
+      netStatusText:
+        description: 网络状态描述
+        type: string
+      officeId:
+        description: 机构
+        type: string
+      officeName:
+        description: 机构名称
+        type: string
+      pauseType:
+        description: 是否暂停  0：正常， 1：暂停
+        type: integer
+      robotAccount:
+        type: string
+      robotId:
+        type: string
+      robotModel:
+        description: 机器人型号
+        type: string
+      softVersion:
+        description: 底盘版本号
+        type: string
+      status:
+        description: 状态
+        type: integer
+      statusText:
+        description: 状态描述
+        type: string
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  result.Result:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      message:
+        type: string
+    type: object
+  service.ElasticRobotPushMessagePageQuery:
+    properties:
+      endDate:
+        description: 结束时间
+        type: string
+      officeId:
+        description: 机构id
+        type: string
+      pageIndex:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 页数
+        type: integer
+      path:
+        description: 消息路径
+        type: string
+      robotId:
+        description: 机器人id
+        type: string
+      sendCount:
+        description: 发送次数
+        type: integer
+      startDate:
+        description: 开始时间
+        type: string
+      status:
+        description: 消息推送是否成功  1:推送成功  2:执行成功
+        type: integer
+    required:
+    - officeId
+    - pageIndex
+    - pageSize
+    - robotId
+    type: object
+  service.ElasticRobotStatusPageQuery:
+    properties:
+      endDate:
+        description: 结束时间
+        type: string
+      netStatus:
+        description: 网络状态
+        type: integer
+      officeId:
+        description: 机构id
+        type: string
+      pageIndex:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 页数
+        type: integer
+      robotId:
+        description: 机器人id
+        type: string
+      startDate:
+        description: 开始时间
+        type: string
+      status:
+        description: 机器人状态
+        type: integer
+    required:
+    - officeId
+    - pageIndex
+    - pageSize
+    - robotId
+    type: object
+info:
+  contact:
+    email: notice@epsit.cn
+    name: 联系我们
+    url: http://epshealth.com/Contact/contact.html
+  description: 物流机器人监控系统API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://epshealth.com/
+  title: EPSHealth-AIRobot-Monitor API
+  version: "1.0"
+paths:
+  /auth/user/permissions:
+    get:
+      description: 获取用户的权限菜单
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dao.MenuVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限菜单
+      tags:
+      - auth
+  /device/getRobotStatus:
+    post:
+      description: 查看机器人的状态列表信息
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/service.ElasticRobotStatusPageQuery'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.PageResult'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 查看机器人的状态列表信息
+      tags:
+      - robot
+  /device/getSourceRobotStatus/{documentId}:
+    get:
+      description: 获取机器人状态的源数据
+      parameters:
+      - description: 文档Id
+        in: path
+        name: documentId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  type: object
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取机器人状态的源数据
+      tags:
+      - robot
+  /login:
+    post:
+      description: 监控系统登录接口
+      parameters:
+      - description: 账号信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: 监控系统登录接口
+      tags:
+      - auth
+  /proxyServer/list:
+    get:
+      description: 获取代理服务信息
+      parameters:
+      - description: 机构信息
+        in: query
+        name: officeId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/controller.ProxyVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取代理服务信息
+      tags:
+      - proxy
+  /robot/getRobotConfig:
+    get:
+      description: 获取所有机器人相关配置(机器人类型、机器人状态)
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/controller.RobotConfigVo'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取所有机器人相关配置
+      tags:
+      - robot
+  /robotJob/dispatchOperate:
+    post:
+      description: 调度相关的操作
+      parameters:
+      - description: 机构机器人信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ReleaseVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.Result'
+      security:
+      - ApiKeyAuth: []
+      summary: 调度相关的操作
+      tags:
+      - dispatch
+  /robotJobQueue/cancelRobotJob:
+    post:
+      description: 取消机器人任务
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.SimpleRobotVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.Result'
+      security:
+      - ApiKeyAuth: []
+      summary: 取消机器人任务
+      tags:
+      - robot
+  /robotJobQueue/jobRecordList:
+    post:
+      description: 获取任务执行记录
+      parameters:
+      - description: 获取任务记录数据VO
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/model.RobotJobStatusChangeQuery'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.ElasticRobotJobExec'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取任务执行记录
+      tags:
+      - robot
+  /robotJobQueue/list:
+    post:
+      description: 查看机器人的任务列表信息
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/model.RobotJobQueryVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.PageResult'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 查看机器人的任务列表信息
+      tags:
+      - robot
+  /robotPushMessage/list:
+    post:
+      description: 获取推送列表
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/service.ElasticRobotPushMessagePageQuery'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.PageResult'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取推送列表
+      tags:
+      - robot
+  /robotUser/areaList:
+    get:
+      description: 获取省市区域列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dao.AreaVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取省市区域列表
+      tags:
+      - auth
+  /robotUser/floorMap:
+    post:
+      description: 获取监控地图信息
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/model.OfficeFloorVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/controller.FloorMapAndRobotVo'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取监控地图信息
+      tags:
+      - map
+  /robotUser/getFloorList:
+    post:
+      description: 获取地图监控的楼层信息
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.RobotFloorVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取地图监控的楼层信息
+      tags:
+      - buildingAndFloorInfo
+  /robotUser/getOfficeBuildingList:
+    post:
+      description: 获取楼宇列表
+      parameters:
+      - description: 机构id
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.OfficeData'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dao.OfficeBuildingVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取楼宇列表
+      tags:
+      - buildingAndFloorInfo
+  /robotUser/office/list:
+    post:
+      description: 获取用户的机构列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dao.OfficeVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户的机构列表
+      tags:
+      - auth
+  /robotUser/operateRobot:
+    post:
+      description: 操作机器人
+      parameters:
+      - description: 操作信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.OperateRobotVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.Result'
+      security:
+      - ApiKeyAuth: []
+      summary: 操作机器人
+      tags:
+      - robot
+  /robotUser/remove/{officeId}/{robotId}:
+    get:
+      description: 移除机器人
+      parameters:
+      - description: 机构Id
+        in: path
+        name: officeId
+        required: true
+        type: string
+      - description: 机器人Id
+        in: path
+        name: robotId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/result.Result'
+      security:
+      - ApiKeyAuth: []
+      summary: 移除机器人
+      tags:
+      - robot
+  /robotUser/robotList:
+    post:
+      description: 获取用户对应的机器人列表信息
+      parameters:
+      - description: 请求信息
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/controller.RobotByOfficeAndStatusVo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/result.Result'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.RobotStatusVo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户对应的机器人列表信息
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

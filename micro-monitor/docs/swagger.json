@@ -1,0 +1,1605 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "物流机器人监控系统API.",
+        "title": "EPSHealth-AIRobot-Monitor API",
+        "termsOfService": "http://epshealth.com/",
+        "contact": {
+            "name": "联系我们",
+            "url": "http://epshealth.com/Contact/contact.html",
+            "email": "notice@epsit.cn"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/auth/user/permissions": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取用户的权限菜单",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "获取权限菜单",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dao.MenuVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/device/getRobotStatus": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查看机器人的状态列表信息",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "查看机器人的状态列表信息",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.ElasticRobotStatusPageQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.PageResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/device/getSourceRobotStatus/{documentId}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取机器人状态的源数据",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "获取机器人状态的源数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "文档Id",
+                        "name": "documentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "监控系统登录接口",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "监控系统登录接口",
+                "parameters": [
+                    {
+                        "description": "账号信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.LoginVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/proxyServer/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取代理服务信息",
+                "tags": [
+                    "proxy"
+                ],
+                "summary": "获取代理服务信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机构信息",
+                        "name": "officeId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/controller.ProxyVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robot/getRobotConfig": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取所有机器人相关配置(机器人类型、机器人状态)",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "获取所有机器人相关配置",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controller.RobotConfigVo"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotJob/dispatchOperate": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "调度相关的操作",
+                "tags": [
+                    "dispatch"
+                ],
+                "summary": "调度相关的操作",
+                "parameters": [
+                    {
+                        "description": "机构机器人信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ReleaseVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/result.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/robotJobQueue/cancelRobotJob": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "取消机器人任务",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "取消机器人任务",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.SimpleRobotVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/result.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/robotJobQueue/jobRecordList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取任务执行记录",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "获取任务执行记录",
+                "parameters": [
+                    {
+                        "description": "获取任务记录数据VO",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RobotJobStatusChangeQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.ElasticRobotJobExec"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotJobQueue/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "查看机器人的任务列表信息",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "查看机器人的任务列表信息",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RobotJobQueryVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.PageResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotPushMessage/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取推送列表",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "获取推送列表",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.ElasticRobotPushMessagePageQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.PageResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/areaList": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取省市区域列表",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "获取省市区域列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dao.AreaVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/floorMap": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取监控地图信息",
+                "tags": [
+                    "map"
+                ],
+                "summary": "获取监控地图信息",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OfficeFloorVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controller.FloorMapAndRobotVo"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/getFloorList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取地图监控的楼层信息",
+                "tags": [
+                    "buildingAndFloorInfo"
+                ],
+                "summary": "获取地图监控的楼层信息",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.RobotFloorVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/getOfficeBuildingList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取楼宇列表",
+                "tags": [
+                    "buildingAndFloorInfo"
+                ],
+                "summary": "获取楼宇列表",
+                "parameters": [
+                    {
+                        "description": "机构id",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.OfficeData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dao.OfficeBuildingVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/office/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取用户的机构列表",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "获取用户的机构列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dao.OfficeVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/operateRobot": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "操作机器人",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "操作机器人",
+                "parameters": [
+                    {
+                        "description": "操作信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.OperateRobotVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/result.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/remove/{officeId}/{robotId}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "移除机器人",
+                "tags": [
+                    "robot"
+                ],
+                "summary": "移除机器人",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机构Id",
+                        "name": "officeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "机器人Id",
+                        "name": "robotId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/result.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/robotUser/robotList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取用户对应的机器人列表信息",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "获取用户对应的机器人列表信息",
+                "parameters": [
+                    {
+                        "description": "请求信息",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.RobotByOfficeAndStatusVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/result.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.RobotStatusVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.FloorMapAndRobotVo": {
+            "type": "object",
+            "properties": {
+                "floor": {
+                    "type": "integer"
+                },
+                "liftAreaCoords": {
+                    "description": "电梯区域坐标集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Point"
+                    }
+                },
+                "mapFile": {
+                    "type": "string"
+                },
+                "officeId": {
+                    "type": "string"
+                },
+                "originX": {
+                    "type": "number"
+                },
+                "originY": {
+                    "type": "number"
+                },
+                "positionList": {
+                    "description": "充电桩集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dao.RobotPositionRes"
+                    }
+                },
+                "resolution": {
+                    "type": "number"
+                },
+                "robotStatusList": {
+                    "description": "机器人状态集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.RobotStatusRes"
+                    }
+                },
+                "trafficAreaCoords": {
+                    "description": "管制区域坐标集合",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Point"
+                    }
+                }
+            }
+        },
+        "controller.LoginVo": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "账号",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.OfficeData": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "description": "编号",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.OperateRobotVo": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "operateType",
+                "robotId"
+            ],
+            "properties": {
+                "alertMessage": {
+                    "description": "操作原因信息",
+                    "type": "string"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "operateType": {
+                    "type": "integer"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ProxyVo": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "netStatus": {
+                    "type": "integer"
+                },
+                "netStatusText": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ReleaseVo": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "releaseType",
+                "robotId"
+            ],
+            "properties": {
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "releaseType": {
+                    "type": "integer"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.RobotByOfficeAndStatusVo": {
+            "type": "object",
+            "required": [
+                "officeId"
+            ],
+            "properties": {
+                "netStatus": {
+                    "type": "integer"
+                },
+                "officeId": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.RobotConfigVo": {
+            "type": "object",
+            "properties": {
+                "jobStatusList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/enum.SimpleJobStatus"
+                    }
+                },
+                "jobTypeList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/enum.SimpleJobType"
+                    }
+                },
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "statusList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/enum.SimpleRobotStatus"
+                    }
+                }
+            }
+        },
+        "controller.RobotFloorVo": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "robotId"
+            ],
+            "properties": {
+                "buildingId": {
+                    "description": "楼宇id",
+                    "type": "string"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                },
+                "robotModel": {
+                    "description": "机器人类型",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.SimpleRobotVo": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "robotId"
+            ],
+            "properties": {
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                }
+            }
+        },
+        "dao.AreaVo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "子id",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "区域名称",
+                    "type": "string"
+                },
+                "parentId": {
+                    "description": "父id",
+                    "type": "string"
+                }
+            }
+        },
+        "dao.MenuVo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "permission": {
+                    "description": "权限标识",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "是否在菜单中显示",
+                    "type": "string"
+                }
+            }
+        },
+        "dao.OfficeBuildingVo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                }
+            }
+        },
+        "dao.OfficeVo": {
+            "type": "object",
+            "properties": {
+                "cityId": {
+                    "description": "城市",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "provinceId": {
+                    "description": "省份",
+                    "type": "string"
+                }
+            }
+        },
+        "dao.RobotPositionRes": {
+            "type": "object",
+            "properties": {
+                "cname": {
+                    "description": "位置名称",
+                    "type": "string"
+                },
+                "cx": {
+                    "description": "位置 x 坐标",
+                    "type": "number"
+                },
+                "cy": {
+                    "description": "位置 y 坐标",
+                    "type": "number"
+                },
+                "id": {
+                    "description": "guid",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "任务类型 1 、4 、7 以外的类型不能呼叫",
+                    "type": "integer"
+                }
+            }
+        },
+        "enum.SimpleJobStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "enum.SimpleJobType": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "enum.SimpleRobotStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ElasticRobotJobExec": {
+            "type": "object",
+            "properties": {
+                "acceptState": {
+                    "description": "物品接收状态",
+                    "type": "integer"
+                },
+                "buildingName": {
+                    "description": "楼宇名称",
+                    "type": "string"
+                },
+                "dispatchMode": {
+                    "description": "运行模式",
+                    "type": "integer"
+                },
+                "documentId": {
+                    "description": "文档id",
+                    "type": "string"
+                },
+                "estopStatus": {
+                    "description": "是否急停 0-正常，1-急停状态",
+                    "type": "integer"
+                },
+                "execStateEnum": {
+                    "description": "新增加的字段",
+                    "type": "integer"
+                },
+                "execStateText": {
+                    "description": "任务执行状态描述",
+                    "type": "string"
+                },
+                "finalJobId": {
+                    "description": "最终任务Id",
+                    "type": "string"
+                },
+                "finalJobType": {
+                    "description": "最终任务类型",
+                    "type": "string"
+                },
+                "floor": {
+                    "description": "楼层",
+                    "type": "integer"
+                },
+                "jobId": {
+                    "description": "jobId",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pauseType": {
+                    "description": "是否暂停：1：暂停，0：正常",
+                    "type": "integer"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                },
+                "robotName": {
+                    "description": "机器人名称",
+                    "type": "string"
+                },
+                "spotName": {
+                    "description": "当前位置名称",
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "statusEndTime": {
+                    "description": "状态结束时间",
+                    "type": "integer"
+                },
+                "statusStartTime": {
+                    "description": "状态开始时间",
+                    "type": "integer"
+                },
+                "statusText": {
+                    "type": "string"
+                },
+                "stopInfo": {
+                    "type": "string"
+                },
+                "targetName": {
+                    "description": "目标位置名称",
+                    "type": "string"
+                },
+                "timeConsume": {
+                    "description": "耗时",
+                    "type": "number"
+                }
+            }
+        },
+        "model.OfficeFloorVo": {
+            "type": "object",
+            "required": [
+                "buildingId",
+                "floor",
+                "officeId",
+                "robotModel"
+            ],
+            "properties": {
+                "buildingId": {
+                    "description": "楼宇id",
+                    "type": "string"
+                },
+                "floor": {
+                    "description": "楼层",
+                    "type": "integer"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "robotModel": {
+                    "description": "机器人类型",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PageResult": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "pageIndex": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Point": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.RobotJobQueryVo": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "pageIndex",
+                "pageSize",
+                "robotId"
+            ],
+            "properties": {
+                "endDate": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "jobStatus": {
+                    "type": "integer"
+                },
+                "jobType": {
+                    "type": "integer"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "pageIndex": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "页数",
+                    "type": "integer"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                },
+                "startDate": {
+                    "description": "开始时间",
+                    "type": "string"
+                }
+            }
+        },
+        "model.RobotJobStatusChangeQuery": {
+            "type": "object",
+            "required": [
+                "jobId",
+                "officeId"
+            ],
+            "properties": {
+                "day": {
+                    "description": "时间，主要用来定位索引",
+                    "type": "string"
+                },
+                "jobId": {
+                    "description": "任务id",
+                    "type": "string"
+                },
+                "officeId": {
+                    "type": "string"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                }
+            }
+        },
+        "model.RobotStatusRes": {
+            "type": "object",
+            "properties": {
+                "robotId": {
+                    "type": "string"
+                },
+                "robotModel": {
+                    "description": "机器人型号",
+                    "type": "string"
+                },
+                "robotName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.RobotStatusVo": {
+            "type": "object",
+            "properties": {
+                "buildingId": {
+                    "type": "string"
+                },
+                "buildingName": {
+                    "type": "string"
+                },
+                "chassisSerialNumber": {
+                    "description": "软件版本号",
+                    "type": "string"
+                },
+                "dispatchMode": {
+                    "description": "是否调度模式",
+                    "type": "boolean"
+                },
+                "eStopStatus": {
+                    "description": "是否急停  0：正常， 1：急停",
+                    "type": "integer"
+                },
+                "electric": {
+                    "description": "电量",
+                    "type": "number"
+                },
+                "floor": {
+                    "description": "楼层",
+                    "type": "integer"
+                },
+                "lastUploadTime": {
+                    "description": "最后上传时间",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "机器人名称",
+                    "type": "string"
+                },
+                "netStatus": {
+                    "description": "网络状态",
+                    "type": "integer"
+                },
+                "netStatusText": {
+                    "description": "网络状态描述",
+                    "type": "string"
+                },
+                "officeId": {
+                    "description": "机构",
+                    "type": "string"
+                },
+                "officeName": {
+                    "description": "机构名称",
+                    "type": "string"
+                },
+                "pauseType": {
+                    "description": "是否暂停  0：正常， 1：暂停",
+                    "type": "integer"
+                },
+                "robotAccount": {
+                    "type": "string"
+                },
+                "robotId": {
+                    "type": "string"
+                },
+                "robotModel": {
+                    "description": "机器人型号",
+                    "type": "string"
+                },
+                "softVersion": {
+                    "description": "底盘版本号",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "状态",
+                    "type": "integer"
+                },
+                "statusText": {
+                    "description": "状态描述",
+                    "type": "string"
+                },
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                }
+            }
+        },
+        "result.Result": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.ElasticRobotPushMessagePageQuery": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "pageIndex",
+                "pageSize",
+                "robotId"
+            ],
+            "properties": {
+                "endDate": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "pageIndex": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "页数",
+                    "type": "integer"
+                },
+                "path": {
+                    "description": "消息路径",
+                    "type": "string"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                },
+                "sendCount": {
+                    "description": "发送次数",
+                    "type": "integer"
+                },
+                "startDate": {
+                    "description": "开始时间",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "消息推送是否成功  1:推送成功  2:执行成功",
+                    "type": "integer"
+                }
+            }
+        },
+        "service.ElasticRobotStatusPageQuery": {
+            "type": "object",
+            "required": [
+                "officeId",
+                "pageIndex",
+                "pageSize",
+                "robotId"
+            ],
+            "properties": {
+                "endDate": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "netStatus": {
+                    "description": "网络状态",
+                    "type": "integer"
+                },
+                "officeId": {
+                    "description": "机构id",
+                    "type": "string"
+                },
+                "pageIndex": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "页数",
+                    "type": "integer"
+                },
+                "robotId": {
+                    "description": "机器人id",
+                    "type": "string"
+                },
+                "startDate": {
+                    "description": "开始时间",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "机器人状态",
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -1,0 +1,69 @@
+project:
+  name: &projectName epshealth-airobot-monitor
+  port: 9004
+  swagger: true
+
+relatedserver:
+  dispatch: http://192.168.6.100:9002
+
+jwt:
+  issuer: *projectName
+  secret: c2VybmFtZSI6InRlc3QiLCJleHAiOjE2MDA5MjE0MjEsImlzcyI6ImVwc2hlYWx0aCIsIm5iZiI6MTYwMDkxNDIyMX0
+  expires: 1440m
+
+redis:
+  sentinel:
+    mastername: airobot
+    sentineladdrs:
+      - 192.168.6.103:5010
+      - 192.168.6.104:5010
+      - 192.168.6.105:5010
+    password: c7605l0Mk0
+    db: 10
+
+db:
+  master:
+    dialector: mysql
+    username: airobot
+    password: i3o3aFYUPr
+    host: 192.168.6.101:3306
+    path: airobot_dev
+    rawquery: charset=utf8&parseTime=True&loc=Local
+    maxopen: 100
+    maxidle: 10
+  slave:
+    dialector: mysql
+    username: airobot
+    password: i3o3aFYUPr
+    host: 192.168.6.102:3306
+    path: airobot_dev
+    rawquery: charset=utf8&parseTime=True&loc=Local
+    maxopen: 100
+    maxidle: 10
+
+rabbitmq:
+  service: 192.168.6.100:6001
+  host: airobot-dev
+  username: airobot
+  password: tbgmJIUoHx
+
+log:
+  project: *projectName
+  author: ycm
+  machine: machine_ycm
+  level: debug
+  jsonFormat: true
+  file: /var/log/airobot/monitor.log
+
+mqtt:
+  services:
+    - 192.168.6.100:4001
+  username: airobot
+  password: GCpm4WZCBB
+  clientid: monitor-clientId
+
+elastic:
+  hosts:
+    - http://192.168.6.100:7001
+  username: airobot
+  password: hArhIhzfg5
